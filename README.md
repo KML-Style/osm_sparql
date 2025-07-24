@@ -133,7 +133,7 @@ Valid formats for polygons are `(x y, x2 y2, x3 y3)`, `((x y, x2 y2, x3 y3))`, `
 ## 📝 Notes
 
 - The queries have been tested with a GraphDB local endpoint.
-- If you encounter CORS issues when you run a query, ensure that your `.cfg` file includes the following under `[JavaOptions]`:
+- If you encounter CORS issues when you run a query, ensure that your `.cfg` file includes the following lines under `[JavaOptions]`:
   `java-options=-Dgraphdb.workbench.cors.enable=true`
   `java-options=-Dgraphdb.workbench.cors.origin=*` 
 
