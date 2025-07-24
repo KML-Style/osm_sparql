@@ -302,4 +302,95 @@ export async function getDistance(endpointUrl, user_loc, item) {
   return data.results.bindings.length > 0 ? parseFloat(data.results.bindings[0].dist.value): null; 
 }
 
-// Request 2.3 - Know if toilets are located on a path (with an eventual tolerance)
+// Request 2.3 - Know if an amenity is located on a path (with an eventual tolerance distMax)
+export async function isAmenityOnPath(endpointUrl, path, amenity, distMax = 0) {
+  const formattedPath = formatWKT(path, "LINESTRING");
+
+  const filterClause = distMax > 0
+    ? `FILTER(geof:distance(?linestring_user, ?wkt_item, uom:metre) <= ${distMax})`
+    : `FILTER(geof:sfIntersects(?linestring_user, ?wkt_item))`;
+
+  const sparqlQuery = `
+  PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+  PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+  PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+  PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+
+  ASK {
+      BIND(${formattedPath} AS ?linestring_user)
+    
+      ?item osmkey:amenity "${amenity}" .
+      ?item geo:hasGeometry/geo:asWKT ?wkt_item .
+    
+      ${filterClause}
+    }
+  `;
+
+  const url = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+  const headers = { "Accept": "application/sparql-results+json" };
+
+  const response = await fetch(url, { headers });
+  if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+  const data = await response.json();
+
+  return !!data.boolean;
+}
+
+// Request 2.4 - Get minimal distance from a geometry to a specific railway 
+export async function getDistanceToRailway(endpointUrl, geometry, geometryType, railwayType){
+    const formattedGeometry = formatWKT(geometry, geometryType.toUpperCase());
+    const sparqlQuery = `
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+    PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+    PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+    PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+
+    SELECT DISTINCT ?item ?name ?dist
+    WHERE {
+          BIND(${formattedGeometry} AS ?loc)
+          
+          ?item osmkey:railway "${railwayType}" .
+          ?item geo:hasGeometry/geo:asWKT ?item_loc .
+          OPTIONAL{?item osmkey:name ?name}
+          
+          BIND (geof:distance(?loc, ?item_loc, uom:metre) AS ?dist)
+        }
+    ORDER BY ASC(?dist)
+    `;
+    
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+    return data;
+}
+
+// Request 2.5 - Get path/area intersection
+export async function getIntersection(endpointUrl, path, area){
+    const formattedPath = formatWKT(path, "LINESTRING");
+    const formattedArea = formatWKT(area, "POLYGON");
+    const sparqlQuery = `
+    PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+    PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+
+    SELECT (geof:intersection(?way, ?area) AS ?intersectedSegments) WHERE {
+    
+    BIND(${formattedArea} AS ?area)
+    BIND(${formattedPath} AS ?way)
+    }
+    `;
+    
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+    return data;
+}
