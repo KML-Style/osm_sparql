@@ -1,3 +1,5 @@
+import { formatWKT } from './utils.js';
+
 // Request 1.1: Get all amenities of a specific type and their distance to the user’s coordinates.
 export async function getNearbyAmenities(endpointUrl, latUser, lonUser, amenity) {
   const sparqlQuery = `
