@@ -228,7 +228,6 @@ export async function getItemsInPolygon(endpointUrl, polygon){
     }
     ORDER BY (!BOUND(?name)) ?name
     `;
-    console.log(sparqlQuery);
     const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
     const headers = { "Accept": "application/sparql-results+json" };
 
@@ -239,3 +238,68 @@ export async function getItemsInPolygon(endpointUrl, polygon){
     
     return data;
 }
+
+// Request 2.1 - Know if a footway crossing is nearby an user (reprsented by a point)
+export async function isCrossingNearby(endpointUrl, user_loc, distMax) {
+  const user_loc_formatted = formatWKT(user_loc, "POINT");
+  const sparqlQuery = `
+  PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+  PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+  PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+  PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+  
+  ASK {
+    BIND (${user_loc_formatted} AS ?wkt_user) 
+    {
+        ?crossing osmkey:highway 'crossing' .
+        ?crossing geo:hasGeometry/geo:asWKT ?wkt_crossing .
+    }
+    UNION 
+    {
+        ?crossing osmkey:highway 'footway' .
+        ?crossing osmkey:footway 'crossing' .
+        ?crossing geo:hasCentroid/geo:asWKT ?wkt_crossing .
+    }
+    BIND (geof:distance(?wkt_user, ?wkt_crossing, uom:metre) AS ?dist)
+    FILTER(?dist <= ${distMax})
+    }
+  `;
+  const url = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+  const headers = { "Accept": "application/sparql-results+json" };
+
+  const response = await fetch(url, { headers });
+  if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+  const data = await response.json();
+
+  return !!data.boolean;
+}
+
+// Request 2.2 - Get the distance from a user (represented by a point) to an object (characterized by an id)
+export async function getDistance(endpointUrl, user_loc, item) {
+  const user_loc_formatted = formatWKT(user_loc, "POINT");
+  const sparqlQuery = `
+  PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+  PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+  PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+  PREFIX osmway: <https://www.openstreetmap.org/way/>
+  PREFIX osmnode: <https://www.openstreetmap.org/node/>
+  PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+  
+  SELECT DISTINCT ?dist WHERE {
+      BIND (${user_loc_formatted} AS ?wkt_user) 
+      ${item} geo:hasGeometry/geo:asWKT ?wkt_item .
+         
+      BIND (geof:distance(?wkt_user, ?wkt_item, uom:metre) AS ?dist)
+    }
+  `;
+  const url = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+  const headers = { "Accept": "application/sparql-results+json" };
+
+  const response = await fetch(url, { headers });
+  if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+  const data = await response.json();
+
+  return data.results.bindings.length > 0 ? parseFloat(data.results.bindings[0].dist.value): null; 
+}
+
+// Request 2.3 - Know if toilets are located on a path (with an eventual tolerance)
