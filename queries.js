@@ -61,7 +61,6 @@ export async function getAmenitiesNextToTransport(endpointUrl, amenity, distMax)
     ORDER BY ASC(?avg_dist)
     `;
     const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
-    console.log(fullUrl);
     const headers = { "Accept": "application/sparql-results+json" };
 
     const response = await fetch(fullUrl, { headers });
@@ -71,3 +70,106 @@ export async function getAmenitiesNextToTransport(endpointUrl, amenity, distMax)
     
     return data;
 }
+
+// Request 3: Get all security camera located less than 'distMax' meters from a given object.
+export async function getNearbySurveillance(endpointUrl, id, distMax){
+  const sparqlQuery = `
+    PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+    PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+    PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+    PREFIX osmway: <https://www.openstreetmap.org/way/>
+    PREFIX osmnode: <https://www.openstreetmap.org/node/>
+    PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+    SELECT DISTINCT ?item ?surveillance ?dist
+    WHERE {
+      {
+        SELECT ?item ?item_loc ?tmp WHERE {
+          BIND(${id} AS ?item)
+          ?item geo:hasGeometry/geo:asWKT ?item_loc .
+          BIND(1 AS ?tmp)
+        }
+        LIMIT 1
+      }
+      {
+        SELECT ?surveillance ?surveillance_loc ?tmp WHERE {
+          ?surveillance osmkey:surveillance ?value .
+          ?surveillance geo:hasGeometry/geo:asWKT ?surveillance_loc .
+          FILTER(?value != "no")
+          BIND(1 AS ?tmp)
+        }
+      }
+      BIND (geof:distance(?item_loc,?surveillance_loc,uom:metre) AS ?dist)
+      FILTER(?dist <= ${distMax})
+    }
+    ORDER BY ASC(?dist)
+    `;
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+    return data;
+  }
+
+// Request 4: Get opening times for a given list of objects (caracterized by id)
+export async function getOpeningTime(endpointUrl, buildings){
+    const valuesBuildings = buildings.join('\n        ');
+    const sparqlQuery = `
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+    PREFIX osmway: <https://www.openstreetmap.org/way/>
+    PREFIX osmnode: <https://www.openstreetmap.org/node/>
+    PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+
+    SELECT ?element ?name ?opening_hours WHERE {
+      VALUES ?element {
+        ${valuesBuildings}
+      }
+
+      ?element osmkey:opening_hours ?opening_hours. 
+      OPTIONAL { ?element osmkey:name ?name. }
+     }
+    `;
+
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+  return data;
+  }
+
+// Request 5: Get number of levels for a given list of objects (caracterized by id)
+export async function getNumberOfLevels(endpointUrl, buildings){
+    const valuesBuildings = buildings.join('\n        ');
+    const sparqlQuery = `
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+    PREFIX osmway: <https://www.openstreetmap.org/way/>
+    PREFIX osmnode: <https://www.openstreetmap.org/node/>
+    PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+
+    SELECT ?element ?name ?levels WHERE {
+      VALUES ?element {
+        ${valuesBuildings}
+      }
+      ?element osmkey:building:levels ?levels.
+      OPTIONAL { ?element osmkey:name ?name. }
+     }
+    `;
+
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+  return data;
+  }
