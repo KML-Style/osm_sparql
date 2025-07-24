@@ -394,3 +394,169 @@ export async function getIntersection(endpointUrl, path, area){
     
     return data;
 }
+
+// Request 3.1 - Get wheelchair-friendly buildings
+export async function getWheelchairFriendlyBuildings(endpointUrl){
+    const sparqlQuery = `
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+
+    SELECT DISTINCT ?item ?item_name WHERE {
+      ?item osmkey:building ?building .
+      ?item osmkey:wheelchair ?wheelchair .
+      OPTIONAL {?item osmkey:name ?item_name .}
+      FILTER (?wheelchair = 'yes' || ?wheelchair = 'designated')
+    }
+    `;
+    
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+    return data;
+}
+
+// Request 3.2 - Get wheelchair-friendly toilets
+export async function getWheelchairFriendlyToilets(endpointUrl){
+    const sparqlQuery = `
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+
+    SELECT DISTINCT ?toilet ?genre WHERE { 
+      ?toilet osmkey:amenity "toilets" .
+      ?toilet osmkey:wheelchair ?wheelchair .
+      OPTIONAL { ?toilet osmkey:female ?female . }
+      OPTIONAL { ?toilet osmkey:male ?male . }
+      FILTER (?wheelchair = "yes" || ?wheelchair = "designated")
+    
+      BIND(COALESCE(?female, "") AS ?f)
+      BIND(COALESCE(?male, "") AS ?m)
+    
+      BIND(
+        IF( ?f = "yes" && ?m = "yes", "both",
+          IF( ?f = "yes", "f",
+            IF( ?m = "yes", "m", "?")
+          )
+        ) AS ?genre
+      )
+    }
+    ORDER BY ?genre
+    `;
+    
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+    return data;
+}
+
+// Request 3.3 - Get the list of stairs equipped with a ramp
+export async function getStairsWithRamp(endpointUrl){
+    const sparqlQuery = `
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+
+    SELECT ?item ?item_ramp ?item_ramp_wc 
+    WHERE {
+        ?item osmkey:highway 'steps' .
+        OPTIONAL {
+            ?item osmkey:ramp ?item_ramp .
+        }
+        OPTIONAL {
+            ?item osmkey:ramp:wheelchair ?item_ramp_wc .
+        }
+        FILTER ((BOUND(?item_ramp_wc) || BOUND(?item_ramp)) && (?item_ramp_wc = 'yes' || ?item_ramp_wc = 'separate' || ?item_ramp = 'yes'))
+    }
+    `;
+
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+    return data;
+}
+
+// Request 3.4 - Get the maximum gradient (%) for a path (modelized by an array of segment IDs)
+export async function getMaximumGradient(endpointUrl, path){
+    const valuesPath = path.join('\n        ');
+    const sparqlQuery = `
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+    PREFIX osmway: <https://www.openstreetmap.org/way/>
+    PREFIX osmnode: <https://www.openstreetmap.org/node/>
+    PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+    PREFIX math: <http://www.w3.org/2005/xpath-functions/math#>
+
+    SELECT (MAX(xsd:decimal(?incline_percent)) AS ?maxIncline)
+        WHERE {
+          VALUES ?item {
+            ${valuesPath}
+          }
+        
+          ?item osmkey:incline ?incline .
+            
+          FILTER(REGEX(STR(?incline), "^[+-]?[0-9]+(%|°|º)$"))
+          
+          BIND(STR(?incline) AS ?inclineStr)
+          BIND(STRLEN(?inclineStr) AS ?len)
+          BIND(SUBSTR(?inclineStr, ?len, 1) AS ?unit)  
+          BIND(REPLACE(?inclineStr, "[^0-9+\\\\-]", "") AS ?numberStr)
+          BIND(xsd:decimal(?numberStr) AS ?numberVal)
+        
+          BIND(IF(?unit = "%", ?numberVal,
+                   100 * math:tan(?numberVal * 3.141592653589793 / 180)) AS ?incline_percent)
+        }
+    `;
+    
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    console.log(fullUrl);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+    return data.results.bindings.length > 0 ? parseFloat(data.results.bindings[0].maxIncline.value): null; 
+}
+
+// Request 3.5 - Get the elements modeling a means of moving between floors for a given building (id)
+export async function getFloorTransitions(endpointUrl, building){
+    const sparqlQuery = `
+    PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+    PREFIX osmway: <https://www.openstreetmap.org/way/>
+    PREFIX osmnode: <https://www.openstreetmap.org/node/>
+    PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+    PREFIX ogc: <http://www.opengis.net/rdf#>
+
+    SELECT DISTINCT ?item ?highway ?level WHERE {
+      BIND (${building} AS ?building)
+      ?building ogc:sfContains ?item .
+	    ?item osmkey:highway ?highway .
+    
+      OPTIONAL {?item osmkey:level ?level .}
+    
+      FILTER(?highway IN ('steps', 'elevator'))
+    }
+    `;
+    
+    const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+    console.log(fullUrl);
+    const headers = { "Accept": "application/sparql-results+json" };
+
+    const response = await fetch(fullUrl, { headers });
+  
+    if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
+    const data = await response.json();
+    
+    return data;
+}
+
