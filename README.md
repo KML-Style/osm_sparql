@@ -76,7 +76,7 @@
 
 - Get the minimal distance from a geometry to each railway from a specific type.
 - Returns a JSON object with the raw SPARQL result. 
-- <sub> eg. of use : <code> getDistanceToRailway('http://localhost:7200/repositories/1', ((4.8651301 45.7821498,4.8651635 45.782077,4.8651822 45.7820342,4.8651982 45.7820005,4.8652644 45.7820155,4.865272 45.7819992,4.8652966 45.7820041,4.8653646 45.7820199,4.8654831 45.7820464,4.8655199 45.7820558,4.8656041 45.7820735,4.8656725 45.7820888,4.8657436 45.7821047,4.865736 45.7821209,4.8657581 45.7821267,4.8658042 45.7821376,4.8658478 45.782147,4.8660656 45.7821958,4.8661089 45.7822054,4.8661509 45.7822144,4.8661912 45.7822231,4.8661656 45.7822793,4.8661521 45.7823084,4.8661513 45.782311,4.8661454 45.7823235,4.8661233 45.7823716,4.8660566 45.782356,4.8660489 45.7823553,4.8660424 45.7823535,4.8660086 45.7823463,4.8659923 45.7823419,4.8659679 45.7823372,4.8659626 45.7823357,4.86593 45.7823282,4.865928 45.7823283,4.865889 45.7823197,4.8658656 45.782313,4.8657977 45.7822991,4.865564 45.7822467,4.865476 45.7822268,4.8655024 45.7822332,4.8654528 45.7822216,4.8654089 45.7822123,4.8653011 45.7821881,4.8652591 45.7821785,4.8651301 45.7821498)), 'POLYGON', 'tram') </code></sub>
+- <sub> eg. of use : <code> getDistanceToRailway('http://localhost:7200/repositories/1', '((4.8651301 45.7821498,4.8651635 45.782077,4.8651822 45.7820342,4.8651982 45.7820005,4.8652644 45.7820155,4.865272 45.7819992,4.8652966 45.7820041,4.8653646 45.7820199,4.8654831 45.7820464,4.8655199 45.7820558,4.8656041 45.7820735,4.8656725 45.7820888,4.8657436 45.7821047,4.865736 45.7821209,4.8657581 45.7821267,4.8658042 45.7821376,4.8658478 45.782147,4.8660656 45.7821958,4.8661089 45.7822054,4.8661509 45.7822144,4.8661912 45.7822231,4.8661656 45.7822793,4.8661521 45.7823084,4.8661513 45.782311,4.8661454 45.7823235,4.8661233 45.7823716,4.8660566 45.782356,4.8660489 45.7823553,4.8660424 45.7823535,4.8660086 45.7823463,4.8659923 45.7823419,4.8659679 45.7823372,4.8659626 45.7823357,4.86593 45.7823282,4.865928 45.7823283,4.865889 45.7823197,4.8658656 45.782313,4.8657977 45.7822991,4.865564 45.7822467,4.865476 45.7822268,4.8655024 45.7822332,4.8654528 45.7822216,4.8654089 45.7822123,4.8653011 45.7821881,4.8652591 45.7821785,4.8651301 45.7821498))', 'POLYGON', 'tram') </code></sub>
 
 #### `getIntersection(endpointUrl, path, area)`
 
@@ -98,19 +98,19 @@
 
 - Get all toilets tagged as wheelchair-accessible (with info about gender, if available).
 - Returns a JSON object with the raw SPARQL result.
-- <sub> eg. of use : <code> getWheelchairFriendlyBuildings('http://localhost:7200/repositories/1') </code></sub>
+- <sub> eg. of use : <code> getWheelchairFriendlyToilets('http://localhost:7200/repositories/1') </code></sub>
 
 #### `getStairsWithRamp(endpointUrl)`
 
 - Get the list of stairs equipped with a ramp.
 - Returns a JSON object with the raw SPARQL result.
-- <sub> eg. of use : <code> getWheelchairFriendlyBuildings('http://localhost:7200/repositories/1') </code></sub>
+- <sub> eg. of use : <code> getStairsWithRamp('http://localhost:7200/repositories/1') </code></sub>
 
 #### `getMaximumGradient(endpointUrl, path)`
 
 - Get the maximum gradient (in %) along a path defined by a list of OSM segment IDs.
 - Returns a float.
-- <sub> eg. of use : <code> getWheelchairFriendlyBuildings('http://localhost:7200/repositories/1',  ["osmway:43013911", "osmway:1113003348", "osmway:128973167", "osmway:1113003347", "osmway:643215532", "osmway:1342103505", "osmway:1342103503"]) </code></sub>
+- <sub> eg. of use : <code> getMaximumGradient('http://localhost:7200/repositories/1',  ["osmway:43013911", "osmway:1113003348", "osmway:128973167", "osmway:1113003347", "osmway:643215532", "osmway:1342103505", "osmway:1342103503"]) </code></sub>
 
 #### `getFloorTransitions(endpointUrl, building)`
 
