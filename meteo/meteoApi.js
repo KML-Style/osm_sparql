@@ -15,3 +15,20 @@ export async function getMeteoHistorical(lat, lon, start_date, end_date) {
     return null;
   }
 }
+
+export async function getMeteoForecast(lat, lon, days){
+    const url = `
+    https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=uv_index_max&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,visibility,wind_speed_10m,wind_direction_10m&timezone=auto&forecast_days=${days}
+    `
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Error : cannot fetch meteo data.");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error :", error);
+    return null;
+  }
+}
