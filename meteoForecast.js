@@ -54,4 +54,3 @@ export function extractUVIndexMax(json, dayIndex = 0) {
     if (!json || !json.daily?.uv_index_max) return null;
     return json.daily.uv_index_max[dayIndex];
 }
-
