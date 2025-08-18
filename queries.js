@@ -24,7 +24,14 @@ export async function getNearbyAmenities(endpointUrl, latUser, lonUser, amenity)
   
   if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
   const data = await response.json();
-  return data;
+	
+  if (!data?.results?.bindings) return null;
+
+  return data.results.bindings.map(b => ({
+    item: b.item?.value ?? null,
+    name: b.name?.value ?? null,
+    dist: b.dist?.value ? parseFloat(b.dist.value) : null
+  }));
 }
 
 // Request 1.2: Get all amenities of a specific type located less than 'distMax' meters from a public transport stop.
@@ -70,7 +77,15 @@ export async function getAmenitiesNextToTransport(endpointUrl, amenity, distMax)
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+      item: b.item?.value ?? null,
+      item_name: b.item_name?.value ?? null,
+      stop: b.stop?.value ?? null,
+      stop_name: b.stop_name?.value ?? null,
+      avg_dist: b.avg_dist?.value ? parseFloat(b.avg_dist.value) : null
+    }));
 }
 
 // Request 1.3: Get all security camera located less than 'distMax' meters from a given object.
@@ -114,7 +129,13 @@ export async function getNearbySurveillance(endpointUrl, id, distMax){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+   if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+      item: b.item?.value ?? null,
+      surveillance: b.surveillance?.value ?? null,
+      dist: b.dist?.value ? parseFloat(b.dist.value) : null
+    }));
   }
 
 // Request 1.5: Get opening times for a given list of objects (characterized by an ID)
@@ -144,7 +165,13 @@ export async function getOpeningTime(endpointUrl, buildings){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-  return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+      item: b.element?.value ?? null,
+      name: b.name?.value ?? null,
+      opening_hours: b.opening_hours?.value ?? null
+    }));
   }
 
 // Request 1.5-bis: Get number of levels for a given list of objects (characterized by an ID)
@@ -173,7 +200,13 @@ export async function getNumberOfLevels(endpointUrl, buildings){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
   
-  return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+      item: b.element?.value ?? null,
+      name: b.name?.value ?? null,
+      levels: b.levels?.value ?? null
+    }));
   }
 
 // Request 1.6: Get the elements (nodes and segments) that are inside an area delimitated by a list of buildings (characterized by an ID)
@@ -204,7 +237,12 @@ export async function getItemsInArea(endpointUrl, buildings){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-  return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+      item: b.element?.value ?? null,
+      name: b.name?.value ?? null,
+    }));
   }
 
 // Request 1.7: Get the elements (nodes and segments) that are inside an area delimitated by a polygon.
@@ -236,7 +274,12 @@ export async function getItemsInPolygon(endpointUrl, polygon){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+      item: b.element?.value ?? null,
+      name: b.name?.value ?? null,
+    }));
 }
 
 // Request 2.1 - Know if a footway crossing is nearby an user (reprsented by a point)
@@ -366,7 +409,13 @@ export async function getDistanceToRailway(endpointUrl, geometry, geometryType, 
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+      item: b.item?.value ?? null,
+      name: b.name?.value ?? null,
+      dist: b.dist?.value ? parseFloat(b.dist.value) : null
+    }));
 }
 
 // Request 2.5 - Get path/area intersection
@@ -392,7 +441,9 @@ export async function getIntersection(endpointUrl, path, area){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings[0].intersectedSegments?.value ?? null;
 }
 
 // Request 3.1 - Get wheelchair-friendly buildings
@@ -416,7 +467,12 @@ export async function getWheelchairFriendlyBuildings(endpointUrl){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+    item: b.item?.value ?? null,
+    name: b.item_name?.value ?? null,
+    }));
 }
 
 // Request 3.2 - Get wheelchair-friendly toilets
@@ -453,7 +509,12 @@ export async function getWheelchairFriendlyToilets(endpointUrl){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+    item: b.toilet?.value ?? null,
+    genre: b.genre?.value ?? null,
+    }));
 }
 
 // Request 3.3 - Get the list of stairs equipped with a ramp
@@ -482,7 +543,13 @@ export async function getStairsWithRamp(endpointUrl){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+    item: b.item?.value ?? null,
+    item_ramp: b.item_ramp?.value ?? null,
+    wheelchair_accessible_ramp: b.item_ramp_wc?.value ?? null,
+    }));
 }
 
 // Request 3.4 - Get the maximum gradient (%) for a path (modelized by an array of segment IDs)
@@ -557,6 +624,12 @@ export async function getFloorTransitions(endpointUrl, building){
     if (!response.ok) throw new Error(`SPARQL Error: ${response.status}`);
     const data = await response.json();
     
-    return data;
+    if (!data?.results?.bindings) return null;
+
+    return data.results.bindings.map(b => ({
+    item: b.item?.value ?? null,
+    highway: b.highway?.value ?? null,
+    level: b.level?.value ?? null,
+    }));
 }
 
