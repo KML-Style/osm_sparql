@@ -6,8 +6,8 @@ The aim of the project is to get meteo forecats and historicals for a point, pro
 
 ### `meteoApi.js`
 Contains functions to fetch meteo data:
-- `getForecast(lat, lon)` → returns forecast JSON (with hourly temperature, humidity, precipitation and its probability, visibility, wind speed and direction and daily UV index max) for the given coordinates.  
-- `getHistory(lat, lon, startDate, endDate)` → returns historical JSON (with hourly temperature, humidity, precipitation, wind speed & daily temperautre min/max/mean, precipitation sum and wind max speed) for the given coordinates and date range.  
+- `getMeteoForecast(lat, lon, days)` → returns forecast JSON (with hourly temperature, humidity, precipitation and its probability, visibility, wind speed and direction and daily UV index max) for the next days corresponding to the given coordinates.  
+- `getMeteoHistorical(lat, lon, startDate, endDate)` → returns historical JSON (with hourly temperature, humidity, precipitation, wind speed & daily temperautre min/max/mean, precipitation sum and wind max speed) for the given coordinates and date range.  
 
 Both functions return a JSON object that follows the **Open-Meteo** structure.
 
@@ -21,18 +21,18 @@ Each function returns `null` if the value is not available.
 ## Usage Example
 
 ```javascript
-import { getForecast } from "./meteoApi.js";
+import { getMeteoForecast } from "./meteoApi.js";
 import { 
   extractPrecipitation
 } from "./extractors.js";
 
 async function runExample() {
-  const forecastJson = await getForecast(45.782344, 4.866044); 
+  const forecastJson = await getMeteoForecast(45.782344, 4.866044, 1); 
+  console.log(forecastJson); // raw JSON
 
   const hourIndex = 1; //data in one hour
   const precipitation = extractPrecipitation(forecastJson, hourIndex);
-
-  console.log(`${precipitation} mm precipitation`);
+  console.log(`${precipitation} mm precipitation in the next hour`);
 }
 
 runExample();
