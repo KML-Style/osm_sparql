@@ -21,9 +21,9 @@ Each function returns `null` if the value is not available.
 ## Usage Example
 
 ```javascript
-import { getMeteoForecast } from "./meteoApi.js";
+import { getMeteoForecast, getMeteoHistorical } from "./meteoApi.js";
 import { 
-  extractPrecipitation
+  extractPrecipitation, extractTemperatureMax
 } from "./extractors.js";
 
 async function runExample() {
@@ -35,5 +35,14 @@ async function runExample() {
   console.log(`${precipitation} mm precipitation in the next hour`);
 }
 
+async function runExample2() {
+  const historicalJson = await getMeteoHistorical(45.782344, 4.866044, "2025-08-16","2025-08-24"); 
+  console.log(historicalJson);
+
+  const dayIndex = 3; 
+  const tempMax = extractTemperatureMax(historicalJson, dayIndex);
+  console.log(`${tempMax} ° max`);
+}
 runExample();
+runExample2();
 ```
