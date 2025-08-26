@@ -152,7 +152,7 @@ export async function getOpeningTime(endpointUrl, buildings){
         ${valuesBuildings}
       }
 
-      ?element osmkey:opening_hours ?opening_hours. 
+      OPTIONAL { ?element osmkey:opening_hours ?opening_hours. }
       OPTIONAL { ?element osmkey:name ?name. }
      }
     `;
@@ -187,7 +187,7 @@ export async function getNumberOfLevels(endpointUrl, buildings){
       VALUES ?element {
         ${valuesBuildings}
       }
-      ?element osmkey:building:levels ?levels.
+      OPTIONAL { ?element osmkey:building:levels ?levels. }
       OPTIONAL { ?element osmkey:name ?name. }
      }
     `;
