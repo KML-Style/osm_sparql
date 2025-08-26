@@ -14,7 +14,7 @@
 #### `getAmenitiesNextToTransport(endpointUrl, amenity, distMax)`
 
 - Get all amenities of a specific type located less than `distMax` meters from a public transport stop.
-- Returns an array of objects having the following structure : (item, item_name, stop, stop_name, dist).
+- Returns an array of objects having the following structure : (item, item_name, stop, stop_name, dist). Item and stop names can be NULL if undefined in OSM.
 - <sub> eg. of use :  <code> getAmenitiesNextToTransport('http://localhost:7200/repositories/1', 'restaurant', 200) </code></sub>
 
 ---
@@ -30,25 +30,25 @@
 #### `getOpeningTime(endpointUrl, buildings)`
 
 - Get opening times for a list of buildings.
-- - Returns an array of objects having the following structure : (item, name, opening_hours).
+- - Returns an array of objects having the following structure : (item, name, opening_hours). Name and opening_hours can be null if undefined in OSM.
 - <sub> eg. of use : <code> getOpeningTime('http://localhost:7200/repositories/1', ["osmway:237651700", "osmway:85041048", "osmnode:10807822849", "osmnode:4411791557"]) </code></sub>
 
 #### `getNumberOfLevels(endpointUrl, buildings)`
 
 - Get the number of levels for a list of OSM buildings.
-- Returns an array of objects having the following structure : (item, name, levels).
+- Returns an array of objects having the following structure : (item, name, levels). Name and levels can be null if undefined in OSM.
 - <sub> eg. of use : <code> getNumberOfLevels('http://localhost:7200/repositories/1', ["osmway:237651700", "osmway:85041048", "osmnode:10807822849", "osmnode:4411791557"]) </code></sub>
 
 #### `getItemsInArea(endpointUrl, buildings)`
 
 - Get all elements (nodes/ways) inside the area delimited by a list of building IDs.
-- Returns an array of objects having the following structure : (item, name).
+- Returns an array of objects having the following structure : (item, name).  Name can be null if undefined in OSM.
 - <sub> eg. of use : <code> getItemsInArea('http://localhost:7200/repositories/1', ["osmway:237651700"]) </code></sub>
 
 #### `getItemsInPolygon(endpointUrl, polygon)`
 
 - Get all elements (nodes/ways) inside a custom polygon area.
-- Returns an array of objects having the following structure : (item, name).
+- Returns an array of objects having the following structure : (item, name). Name can be null if undefined in OSM.
 - <sub>eg. of use : <code>getItemsInPolygon('http://localhost:7200/repositories/1', "((4.8651301 45.7821498,4.8651635 45.782077,4.8651822 45.7820342,4.8651982 45.7820005,4.8652644 45.7820155,4.865272 45.7819992,4.8652966 45.7820041,4.8653646 45.7820199,4.8654831 45.7820464,4.8655199 45.7820558,4.8656041 45.7820735,4.8656725 45.7820888,4.8657436 45.7821047,4.865736 45.7821209,4.8657581 45.7821267,4.8658042 45.7821376,4.8658478 45.782147,4.8660656 45.7821958,4.8661089 45.7822054,4.8661509 45.7822144,4.8661912 45.7822231,4.8661656 45.7822793,4.8661521 45.7823084,4.8661513 45.782311,4.8661454 45.7823235,4.8661233 45.7823716,4.8660566 45.782356,4.8660489 45.7823553,4.8660424 45.7823535,4.8660086 45.7823463,4.8659923 45.7823419,4.8659679 45.7823372,4.8659626 45.7823357,4.86593 45.7823282,4.865928 45.7823283,4.865889 45.7823197,4.8658656 45.782313,4.8657977 45.7822991,4.865564 45.7822467,4.865476 45.7822268,4.8655024 45.7822332,4.8654528 45.7822216,4.8654089 45.7822123,4.8653011 45.7821881,4.8652591 45.7821785,4.8651301 45.7821498))" )</code></sub>
 
 ---
@@ -75,7 +75,7 @@
 #### `getDistanceToRailway(endpointUrl, geometry, geometryType, railwayType)`
 
 - Get the minimal distance from a geometry to each railway from a specific type.
-- Returns an array of objects having the following structure : (item, name, dist).
+- Returns an array of objects having the following structure : (item, name, dist). Name can be null if undefined in OSM.
 - <sub> eg. of use : <code> getDistanceToRailway('http://localhost:7200/repositories/1', '((4.8651301 45.7821498,4.8651635 45.782077,4.8651822 45.7820342,4.8651982 45.7820005,4.8652644 45.7820155,4.865272 45.7819992,4.8652966 45.7820041,4.8653646 45.7820199,4.8654831 45.7820464,4.8655199 45.7820558,4.8656041 45.7820735,4.8656725 45.7820888,4.8657436 45.7821047,4.865736 45.7821209,4.8657581 45.7821267,4.8658042 45.7821376,4.8658478 45.782147,4.8660656 45.7821958,4.8661089 45.7822054,4.8661509 45.7822144,4.8661912 45.7822231,4.8661656 45.7822793,4.8661521 45.7823084,4.8661513 45.782311,4.8661454 45.7823235,4.8661233 45.7823716,4.8660566 45.782356,4.8660489 45.7823553,4.8660424 45.7823535,4.8660086 45.7823463,4.8659923 45.7823419,4.8659679 45.7823372,4.8659626 45.7823357,4.86593 45.7823282,4.865928 45.7823283,4.865889 45.7823197,4.8658656 45.782313,4.8657977 45.7822991,4.865564 45.7822467,4.865476 45.7822268,4.8655024 45.7822332,4.8654528 45.7822216,4.8654089 45.7822123,4.8653011 45.7821881,4.8652591 45.7821785,4.8651301 45.7821498))', 'POLYGON', 'tram') </code></sub>
 
 #### `getIntersection(endpointUrl, path, area)`
@@ -91,13 +91,13 @@
 #### `getWheelchairFriendlyBuildings(endpointUrl)`
 
 - Get all buildings that are wheelchair-accessible.
-- Returns an array of objects having the following structure : (item, name).
+- Returns an array of objects having the following structure : (item, name). Name can be null if undefined in OSM.
 - <sub> eg. of use : <code> getWheelchairFriendlyBuildings('http://localhost:7200/repositories/1') </code></sub>
 
 #### `getWheelchairFriendlyToilets(endpointUrl)`
 
 - Get all toilets tagged as wheelchair-accessible (with info about gender, if available).
-- Returns an array of objects having the following structure : (item, genre).
+- Returns an array of objects having the following structure : (item, genre). Genre can be null if undefined in OSM.
 - <sub> eg. of use : <code> getWheelchairFriendlyToilets('http://localhost:7200/repositories/1') </code></sub>
 
 #### `getStairsWithRamp(endpointUrl)`
