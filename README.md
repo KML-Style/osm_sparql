@@ -30,7 +30,7 @@
 #### `getOpeningTime(endpointUrl, buildings)`
 
 - Get opening times for a list of buildings.
-- - Returns an array of objects having the following structure : (item, name, opening_hours). Name and opening_hours can be null if undefined in OSM.
+- Returns an array of objects having the following structure : (item, name, opening_hours). Name and opening_hours can be null if undefined in OSM.
 - <sub> eg. of use : <code> getOpeningTime('http://localhost:7200/repositories/1', ["osmway:237651700", "osmway:85041048", "osmnode:10807822849", "osmnode:4411791557"]) </code></sub>
 
 #### `getNumberOfLevels(endpointUrl, buildings)`
@@ -43,7 +43,7 @@
 
 - Get all elements (nodes/ways) inside the area delimited by a list of building IDs.
 - Returns an array of objects having the following structure : (item, name).  Name can be null if undefined in OSM.
-- <sub> eg. of use : <code> getItemsInArea('http://localhost:7200/repositories/1', ["osmway:237651700"]) </code></sub>
+- <sub> eg. of use : <code> getItemsInArea('http://localhost:7200/repositories/1', ["osmway:85000377"]) </code></sub>
 
 #### `getItemsInPolygon(endpointUrl, polygon)`
 
