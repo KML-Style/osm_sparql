@@ -47,7 +47,7 @@ export async function getAmenitiesNextToTransport(endpointUrl, amenity, distMax)
       {
         SELECT ?item ?item_name ?item_loc ?tmp WHERE {
           ?item osmkey:amenity "${amenity}" .
-          ?item osmkey:name ?item_name .         
+          OPTIONAL { ?item osmkey:name ?item_name .  }        
           ?item geo:hasGeometry ?item_geo .
           ?item_geo geo:asWKT ?item_loc .
           BIND (1 AS ?tmp)
@@ -57,7 +57,7 @@ export async function getAmenitiesNextToTransport(endpointUrl, amenity, distMax)
         SELECT ?stop ?stop_name ?stop_loc ?tmp WHERE {
           ?stop rdf:type osm:node .
           ?stop osmkey:public_transport "stop_position" .
-          ?stop osmkey:name ?stop_name .
+          OPTIONAL { ?stop osmkey:name ?stop_name . }
           ?stop geo:hasGeometry ?stop_geo .
           ?stop_geo geo:asWKT ?stop_loc .   
           BIND (1 AS ?tmp)
