@@ -65,3 +65,13 @@ SELECT='select%20*%20where%20%7B%3Fs%20%3Fp%20%3Fo%7D'
 curl --header "Accept: application/sparql-results+json" \
   "http://localhost/service/openmeteo/getForecast?lat=52.52&lon=13.41&days=3&query=${SELECT}"
 ```
+
+If an error occures, ensure that the server is running with
+```bash
+node server_hourly.js
+```
+on the directory where server.js is located.
+You should get a message like 
+```bash
+API running on 0.0.0.0:3000
+```
