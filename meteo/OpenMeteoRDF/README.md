@@ -38,12 +38,20 @@ chmod -R 777 logs
 chmod -R 755 html
 ```
 
-## 7. Run
+## 7. Download and unzip OpenMeteo microservice directory
 ```bash
+cd services
+curl -L -o openmeteo.zip https://raw.githubusercontent.com/KML-Style/osm_sparql/main/meteo/OpenMeteoRDF/openmeteo.zip
+unzip openmeteo.zip
+```
+
+## 8. Run
+```bash
+cd ..
 docker compose up -d
 ```
 
-## 8. To test the services
+## 9. To test the services
 ```bash
 URL-encoded query: construct where {?s ?p ?o}
 CONSTRUCT=construct%20WHERE%20%7B%20%3Fs%20%3Fp%20%3Fo%20%7D%20
