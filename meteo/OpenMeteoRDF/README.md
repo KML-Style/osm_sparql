@@ -38,20 +38,36 @@ chmod -R 777 logs
 chmod -R 755 html
 ```
 
-## 7. Download and unzip OpenMeteo microservice directory
+## 7. Change the config to add the server
+
+Add 
+```
+  openmeteo-node:
+    build: ../openmeteo  
+    container_name: openmeteo-node
+    ports:
+      - "3000:3000"
+    working_dir: /usr/src/app
+    volumes:
+      - ../openmeteo:/usr/src/app
+    command: node server.js
+```
+in the docker-compose.yml
+
+## 8. Download and unzip OpenMeteo microservice directory
 ```bash
 cd services
 curl -L -o openmeteo.zip https://raw.githubusercontent.com/KML-Style/osm_sparql/main/meteo/OpenMeteoRDF/openmeteo.zip
 unzip openmeteo.zip
 ```
 
-## 8. Run
+## 9. Run
 ```bash
 cd ..
 docker compose up -d
 ```
 
-## 9. To test the services
+## 10. To test the services
 ```bash
 URL-encoded query: construct where {?s ?p ?o}
 CONSTRUCT=construct%20WHERE%20%7B%20%3Fs%20%3Fp%20%3Fo%20%7D%20
