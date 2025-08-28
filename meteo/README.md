@@ -39,7 +39,7 @@ Returns the precipitation probability (`precipitation_probability`) for the give
 ---
 
 ##### `extractPrecipitation(json, hourIndex = 0)`
-Returns the precipitation (`precipitation`) for the given hour.
+> Returns the precipitation (`precipitation`) for the given hour.
 
 ---
 
