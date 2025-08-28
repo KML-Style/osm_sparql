@@ -23,12 +23,12 @@ Each function returns `null` if the value is not available.
 #### Hourly Extractors
 
 ##### `extractTemperature(json, hourIndex = 0)`
-Returns the temperature (`temperature_2m`) for the given hour.
+> Returns the temperature (`temperature_2m`) for the given hour.
 
 ---
 
 ##### `extractHumidity(json, hourIndex = 0)`
-Returns the relative humidity (`relative_humidity_2m`) for the given hour.
+> Returns the relative humidity (`relative_humidity_2m`) for the given hour.
 
 ---
 
@@ -50,7 +50,7 @@ Returns the visibility (`visibility`) for the given hour.
 ---
 
 ##### `extractWindSpeed(json, hourIndex = 0)`
-Returns the wind speed (`wind_speed_10m`) for the given hour.
+> Returns the wind speed (`wind_speed_10m`) for the given hour.
 
 ---
 
