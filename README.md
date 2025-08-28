@@ -2,6 +2,8 @@
 
 ## 📖 Documentation
 
+The file ```documentation.pdf``` includes a more detailed documentation.
+
 ### 1. Urban data access
 
 #### `getNearbyAmenities(endpointUrl, latUser, lonUser, amenity)`
@@ -119,6 +121,11 @@
 - <sub> eg. of use : <code> getFloorTransitions('http://localhost:7200/repositories/1', 'osmway:85000377') </code></sub>
 
 ---
+## 🌍 Meteo 
+
+- The folder meteo includes requests to OpenMeteo API for forecasts and historicals
+  
+---
 
 ## 🗺️ Geometry Formatting Utility
 
@@ -136,4 +143,3 @@ Valid formats for polygons are `(x y, x2 y2, x3 y3)`, `((x y, x2 y2, x3 y3))`, `
 - If you encounter CORS issues when you run a query, ensure that your `.cfg` file includes the following lines under `[JavaOptions]`:
   `java-options=-Dgraphdb.workbench.cors.enable=true`
   `java-options=-Dgraphdb.workbench.cors.origin=*` 
-
