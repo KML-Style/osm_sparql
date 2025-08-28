@@ -1,6 +1,6 @@
 # OpenMeteo RDF
 
-The aim is to convert the JSON returned by the API into RDF, in order to maintain a consistent data format.
+The aim is to convert the JSON returned by the API into RDF, in order to maintain a consistent data format, using [sparql-micro-service](https://github.com/frmichel/sparql-micro-service?tab=readme-ov-file).
 
 ⚠️ The Microservice isn't working for the moment; the SPARQL microservice receives the parameters correctly, but does not insert them correctly into the URL.
 
