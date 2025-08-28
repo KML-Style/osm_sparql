@@ -18,6 +18,84 @@ Contains functions to extract values from the obtained JSON object.
 
 Each function returns `null` if the value is not available.
 
+---
+
+#### Hourly Extractors
+
+##### `extractTemperature(json, hourIndex = 0)`
+Returns the temperature (`temperature_2m`) for the given hour.
+
+---
+
+##### `extractHumidity(json, hourIndex = 0)`
+Returns the relative humidity (`relative_humidity_2m`) for the given hour.
+
+---
+
+##### `extractPrecipitationProbability(json, hourIndex = 0)`
+> **Forecast only**  
+Returns the precipitation probability (`precipitation_probability`) for the given hour.
+
+---
+
+##### `extractPrecipitation(json, hourIndex = 0)`
+Returns the precipitation (`precipitation`) for the given hour.
+
+---
+
+##### `extractVisibility(json, hourIndex = 0)`
+> **Forecast only**  
+Returns the visibility (`visibility`) for the given hour.
+
+---
+
+##### `extractWindSpeed(json, hourIndex = 0)`
+Returns the wind speed (`wind_speed_10m`) for the given hour.
+
+---
+
+##### `extractWindDirection(json, hourIndex = 0)`
+> **Forecast only**  
+Returns the wind direction (`wind_direction_10m`) for the given hour.
+
+---
+
+#### Daily Extractors
+
+##### `extractUVIndexMax(json, dayIndex = 0)`
+> **Forecast only**  
+Returns the maximum UV index (`uv_index_max`) for the given day.
+
+---
+
+##### `extractWindSpeedMax(json, dayIndex = 0)`
+> **Historical only**  
+Returns the maximum wind speed (`wind_speed_10m_max`) for the given day.
+
+---
+
+##### `extractTemperatureMax(json, dayIndex = 0)`
+> **Historical only**  
+Returns the maximum temperature (`temperature_2m_max`) for the given day.
+
+---
+
+##### `extractTemperatureMin(json, dayIndex = 0)`
+> **Historical only**  
+Returns the minimum temperature (`temperature_2m_min`) for the given day.
+
+---
+
+##### `extractTemperatureMean(json, dayIndex = 0)`
+> **Historical only**  
+Returns the mean temperature (`temperature_2m_mean`) for the given day.
+
+---
+
+##### `extractPrecipitationSum(json, dayIndex = 0)`
+> **Historical only**  
+Returns the total precipitation (`precipitation_sum`) for the given day.
+
 ## Usage Example
 
 ```javascript
