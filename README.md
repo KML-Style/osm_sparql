@@ -131,10 +131,12 @@ The file ```documentation.pdf``` includes a more detailed documentation.
 
 See `formatWKT(input, type)` in `utils.js`  
 This helper function formats coordinates or WKT strings for safe injection into SPARQL.
-Valid formats for points are `(x y)`, `x y`, `POINT(x y)` or `POINT(x y)^^geo:wktLiteral`.
-Valid formats for linestrings are `(x y, x2 y2)`, `LINESTRING(x y, x2 y2)` or `LINESTRING(x y, x2 y2)^^geo:wktLiteral`.
-Valid formats for polygons are `(x y, x2 y2, x3 y3)`, `((x y, x2 y2, x3 y3))`, `POLYGON((x y, x2 y2, x3 y3))` or `POLYGON((x y, x2 y2, x3 y3))^^geo:wktLiteral`.
- 
+- Valid formats for points are `(x y)`, `x y`, `POINT(x y)` or `POINT(x y)^^geo:wktLiteral`.
+- Valid formats for linestrings are `(x y, x2 y2)`, `LINESTRING(x y, x2 y2)` or `LINESTRING(x y, x2 y2)^^geo:wktLiteral`.
+- Valid formats for polygons are `(x y, x2 y2, x3 y3)`, `((x y, x2 y2, x3 y3))`, `POLYGON((x y, x2 y2, x3 y3))` or `POLYGON((x y, x2 y2, x3 y3))^^geo:wktLiteral`.
+
+If the functions return a geometry, it will be in the format `LINESTRING(x y, x2 y2)^^geo:wktLiteral`
+
 ---
 
 ## 📝 Notes
